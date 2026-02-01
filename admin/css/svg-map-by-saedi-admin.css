@@ -18,3 +18,25 @@ svg.map circle.selected {
    box-shadow: 0 0 0 0 rgba(232, 76, 61, 0.7);
    animation: pulse 1.25s infinite cubic-bezier(0.66, 0, 0, 1);
 }
+
+#save_data {
+	position: relative;
+	min-width: 140px;
+}
+
+#save_data .spinner {
+	float: none;
+	margin-left: 8px;
+	visibility: hidden;
+}
+
+#save_data.is-busy .spinner {
+	visibility: visible;
+}
+
+.map .st0 {
+	cursor: pointer;
+	transition: transform 0.15s ease;
+}
+tr.saving { opacity: 0.6; }
+tr.deleting { opacity: 0.4; }

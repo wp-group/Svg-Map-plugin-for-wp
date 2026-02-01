@@ -97,7 +97,30 @@ class Svg_Map_By_Saedi_Public {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/svg-map-by-saedi-public.js', array( 'jquery' ), $this->version, true );
+		wp_localize_script( $this->plugin_name, 'svgData', $this->load_svg_data_for_js() );
 
+	}
+	/**
+	 * loads svg point admin data to localize script
+	 *
+	 * @return array $svg_data_for_js
+	 */
+	public function load_svg_data_for_js() {
+		global $wpdb;
+		$svg_data_for_js = array();
+		$points_for_js = array();
+		$popup_for_js = array();
+		$table_name = $wpdb->prefix . 'svg_map';
+		$results = $wpdb->get_results( "SELECT * FROM $table_name" );
+		if ( $wpdb->num_rows != 0 ) {
+			foreach ( $results as $result ) :
+				array_push( $points_for_js, $result->map_point );
+				array_push( $popup_for_js, $result->map_popup );
+			endforeach;
+		}
+		$svg_data_for_js['points_for_js'] = $points_for_js;
+		$svg_data_for_js['popup_for_js'] = $popup_for_js;
+		return $svg_data_for_js;
 	}
 
 }

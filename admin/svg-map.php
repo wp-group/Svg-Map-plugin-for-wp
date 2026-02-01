@@ -1,4 +1,5 @@
 <h4>Click on the dots to add a location, then after saving use the popup feature below to add description</h4>
+<p id="msg" class="notice"></p>
 <?php
 echo '<div class="world-map-admin">
 <svg class="map" viewBox="0 0 845.2 458">
@@ -2625,50 +2626,69 @@ echo '<div class="world-map-admin">
 </svg>
 </div>';
 ?>
-<button id="save_data" class="button button-primary button-large">Save Selected</button>
-<p id="msg"></p>
+<button id="save_data" class="button button-primary">
+	<span class="label">Save Selected</span>
+	<span class="spinner"></span>
+</button>
 
+<p id="msg" class="notice" style="display:none"></p>
 
 <hr>
+
 <div class="selected">
 	<h3>Selected Points</h3>
 	<?php
 	global $wpdb;
+
 	$points_for_js = array();
-	$popup_for_js = array();
+	$popup_for_js  = array();
+
 	$table_name = $wpdb->prefix . 'svg_map';
-	$results = $wpdb->get_results( "SELECT * FROM $table_name" );
-	if ( $wpdb->num_rows != 0 ) {
-		?>
-		<table class="wp-list-table widefat fixed striped posts">
-			<tr>
-				<th class="manage-column column-title column-primary">SN</th>
-				<th class="manage-column column-title column-primary">Map Point</th>
-				<th class="manage-column column-title column-primary">Map Popup</th>
-				<th class="manage-column column-title column-primary">Action</th>
-			</tr>
-			<?php
-			$i = 1;
-			foreach ( $results as $result ) :
-				?>
-				<tr>
-					<td><?php echo $i++;?></td>
-					<td><?php echo $result->map_point;?></td>
-					<td><input type="text" id="popup-<?php echo $result->id;?>" value="<?php echo $result->map_popup;?>"><a href="#!" class="add_popup" data-point="<?php echo $result->id;?>">Add</a></td>
-					<td><a href="#!" class="delete_point" data-point="<?php echo $result->id;?>">Remove Point</a></td>
-				</tr>
-				<?php
-				array_push( $points_for_js, $result->map_point );
-				array_push( $popup_for_js, $result->map_popup );
-			endforeach;
-			?>
-		</table>
-		<p id="removemsg"></p>
-		<?php
-	}
+	$results = $wpdb->get_results( "SELECT * FROM {$table_name}" );
+
+	if ( $wpdb->num_rows != 0 ) :
 	?>
+	<table class="wp-list-table widefat fixed striped posts">
+		<tr>
+			<th>SN</th>
+			<th>Map Point</th>
+			<th>Map Popup</th>
+			<th>Action</th>
+		</tr>
+
+		<?php
+		$i = 1;
+		foreach ( $results as $result ) :
+			$points_for_js[] = (int) $result->map_point;
+			$popup_for_js[]  = wp_kses_post( $result->map_popup );
+		?>
+			<tr>
+				<td><?php echo esc_html( $i++ ); ?></td>
+				<td><?php echo esc_html( $result->map_point ); ?></td>
+				<td>
+					<input
+						type="text"
+						id="popup-<?php echo esc_attr( $result->id ); ?>"
+						value="<?php echo esc_attr( $result->map_popup ); ?>"
+					>
+					<a href="#!" class="add_popup" data-point="<?php echo esc_attr( $result->id ); ?>">
+						Add
+					</a>
+				</td>
+				<td>
+					<a href="#!" class="delete_point" data-point="<?php echo esc_attr( $result->id ); ?>">
+						Remove Point
+					</a>
+				</td>
+			</tr>
+		<?php endforeach; ?>
+	</table>
+
+	<p id="removemsg"></p>
+	<?php endif; ?>
 </div>
+
 <script>
-var js_map_points = <?php echo json_encode( $points_for_js, JSON_NUMERIC_CHECK );?>;
-var js_map_popup = <?php echo json_encode( $popup_for_js, JSON_NUMERIC_CHECK );?>;
+var js_map_points = <?php echo wp_json_encode( $points_for_js ); ?>;
+var js_map_popup  = <?php echo wp_json_encode( $popup_for_js ); ?>;
 </script>

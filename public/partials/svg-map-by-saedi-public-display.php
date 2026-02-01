@@ -2639,20 +2639,3 @@
 	</svg>
 	<span id="tooltip-span">Hover me</span>
 </div>
-<?php
-global $wpdb;
-$points_for_js = array();
-$popup_for_js = array();
-$table_name = $wpdb->prefix . 'svg_map';
-$results = $wpdb->get_results( "SELECT * FROM $table_name" );
-if ( $wpdb->num_rows != 0 ) {
-	foreach ( $results as $result ) :
-		array_push( $points_for_js, $result->map_point );
-		array_push( $popup_for_js, $result->map_popup );
-	endforeach;
-}
-?>
-<script>
-var js_map_points = <?php echo json_encode( $points_for_js, JSON_NUMERIC_CHECK );?>;
-var js_map_popup = <?php echo json_encode( $popup_for_js, JSON_NUMERIC_CHECK );?>;
-</script>

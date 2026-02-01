@@ -11,10 +11,10 @@
 	 width: 80%;
  }
  .world-map svg.map circle {
-	 fill: #fab16e;
+	 fill: #fff;
  }
  .world-map svg.map .selected {
-	 fill: #242964;
+	 fill: #ff2a0c;
 	 -webkit-transition: all 2s ease;
 	 transition: all 2s ease;
 	 -webkit-box-shadow: 0 0 0 0 rgba(232, 76, 61, 0.7);
